@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@azure/identity": "^4.5.0",
+    "@azure/keyvault-secrets": "^4.9.0",
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "ws": "^8.18.0"

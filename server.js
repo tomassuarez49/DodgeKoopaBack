@@ -6,6 +6,18 @@ const app = express();
 const server = require('http').createServer(app);
 const wss = new WebSocket.Server({ server });
 
+const { DefaultAzureCredential } = require("@azure/identity");
+const { SecretClient } = require("@azure/keyvault-secrets");
+
+// Configura la URL del Key Vault
+const keyVaultName = "dodgekoopavault"; // Cambia esto por el nombre de tu Key Vault
+const vaultUrl = `https://${keyVaultName}.vault.azure.net`;
+
+// Crea el cliente del Key Vault
+const credential = new DefaultAzureCredential();
+const secretClient = new SecretClient(vaultUrl, credential);
+
+
 // Habilitar CORS
 app.use(cors());
 
@@ -130,6 +142,34 @@ function broadcastGameState() {
         }
     });
 }
+
+async function getSecret(secretName) {
+    try {
+        const secret = await secretClient.getSecret(secretName);
+        console.log(`Secreto '${secretName}' obtenido: ${secret.value}`);
+        return secret.value;
+    } catch (error) {
+        console.error(`Error al obtener el secreto '${secretName}':`, error);
+        throw error;
+    }
+}
+
+app.get("/api/secret/:name", async (req, res) => {
+    const secretName = req.params.name;
+
+    try {
+        const secretValue = await getSecret(secretName);
+        res.json({ secret: secretValue });
+    } catch (error) {
+        res.status(500).send("Error al obtener el secreto.");
+    }
+});
+
+// Endpoint básico para verificar el servidor
+app.get('/', (req, res) => {
+    res.send('Servidor backend funcionando correctamente.');
+});
+
 
 // Inicia el servidor en el puerto 8080
 server.listen(8080, () => {
