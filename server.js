@@ -19,7 +19,11 @@ const secretClient = new SecretClient(vaultUrl, credential);
 
 
 // Habilitar CORS
-app.use(cors());
+app.use(cors({
+    origin: 'https://brave-beach-04727251e.4.azurestaticapps.net',
+    methods: 'GET',
+    }
+));
 
 // Ruta principal para verificar el estado del servidor
 app.get('/', (req, res) => {
