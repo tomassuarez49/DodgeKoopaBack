@@ -20,7 +20,7 @@ const secretClient = new SecretClient(vaultUrl, credential);
 
 // Habilitar CORS
 app.use(cors({
-    origin: 'https://brave-beach-04727251e.4.azurestaticapps.net',
+    origin: ['https://brave-beach-04727251e.4.azurestaticapps.net', 'https://koopabalancer.centralus.cloudapp.azure.com'],
     methods: 'GET',
     }
 ));
