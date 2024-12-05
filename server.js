@@ -21,7 +21,7 @@ const secretClient = new SecretClient(vaultUrl, credential);
 // Habilitar CORS
 app.use(cors({
     origin: '*',
-    methods: 'GET',
+    methods: 'GET,POST',
     }
 ));
 
