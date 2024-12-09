@@ -20,9 +20,16 @@ const secretClient = new SecretClient(vaultUrl, credential);
 
 // Habilitar CORS
 app.use(cors({
-    origin: '*',
-    methods: 'GET,POST',
-    }
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('No permitido por CORS'));
+        }
+    },
+    methods: ['GET', 'POST'], // Permite solo los métodos necesarios
+    allowedHeaders: ['Content-Type', 'Authorization'], // Solo los encabezados necesarios
+    credentials: true, // Habilitar credenciales solo si es necesario
 ));
 
 // Ruta principal para verificar el estado del servidor
@@ -42,7 +49,7 @@ function initializeBallPosition() {
     let validPositionFound = false;
 
     while (!validPositionFound) {
-        const randomPosition = Math.floor(Math.random() * 110); // Tamaño del grid (10x11)
+        const randomPosition = getRandomInt(0, 109); // Tamaño del grid (10x11)
         if (!gameState.obstacles.includes(randomPosition)) {
             gameState.ballPosition = randomPosition;
             validPositionFound = true;
