@@ -68,6 +68,10 @@ wss.on('connection', (ws) => {
         try {
             const data = JSON.parse(message);
 
+            if (typeof data.type !== 'string') {
+                        throw new Error("Tipo de mensaje inválido");
+                    }
+
             switch (data.type) {
                 case 'newPlayer':
                     if (data.username && typeof data.position === 'number' && data.color) {
@@ -160,7 +164,9 @@ async function getSecret(secretName) {
 
 app.get("/api/secret/:name", async (req, res) => {
     const secretName = req.params.name;
-
+    if (!/^[a-zA-Z0-9-]+$/.test(secretName)) {
+            return res.status(400).send("Nombre del secreto inválido.");
+        }
     try {
         const secretValue = await getSecret(secretName);
         res.json({ secret: secretValue });
