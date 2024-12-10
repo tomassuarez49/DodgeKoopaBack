@@ -20,17 +20,9 @@ const secretClient = new SecretClient(vaultUrl, credential);
 
 // Habilitar CORS
 app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('No permitido por CORS'));
-        }
-    },
-    methods: ['GET', 'POST'], // Permite solo los métodos necesarios
-    allowedHeaders: ['Content-Type', 'Authorization'], // Solo los encabezados necesarios
-    credentials: true, // Habilitar credenciales solo si es necesario
-));
+    origin: '*',
+    methods: 'GET,POST',
+}
 
 // Ruta principal para verificar el estado del servidor
 app.get('/', (req, res) => {
