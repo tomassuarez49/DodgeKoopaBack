@@ -22,7 +22,8 @@ const secretClient = new SecretClient(vaultUrl, credential);
 app.use(cors({
     origin: '*',
     methods: 'GET,POST',
-}
+    }
+));
 
 // Ruta principal para verificar el estado del servidor
 app.get('/', (req, res) => {
@@ -41,7 +42,7 @@ function initializeBallPosition() {
     let validPositionFound = false;
 
     while (!validPositionFound) {
-        const randomPosition = getRandomInt(0, 109); // Tamaño del grid (10x11)
+        const randomPosition = Math.floor(Math.random() * 110); // Tamaño del grid (10x11)
         if (!gameState.obstacles.includes(randomPosition)) {
             gameState.ballPosition = randomPosition;
             validPositionFound = true;
@@ -66,10 +67,6 @@ wss.on('connection', (ws) => {
     ws.on('message', (message) => {
         try {
             const data = JSON.parse(message);
-
-            if (typeof data.type !== 'string') {
-                        throw new Error("Tipo de mensaje inválido");
-                    }
 
             switch (data.type) {
                 case 'newPlayer':
@@ -163,9 +160,7 @@ async function getSecret(secretName) {
 
 app.get("/api/secret/:name", async (req, res) => {
     const secretName = req.params.name;
-    if (!/^[a-zA-Z0-9-]+$/.test(secretName)) {
-            return res.status(400).send("Nombre del secreto inválido.");
-        }
+
     try {
         const secretValue = await getSecret(secretName);
         res.json({ secret: secretValue });
