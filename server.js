@@ -110,6 +110,15 @@ wss.on('connection', (ws) => {
                     }
                     break;
 
+                case 'chat':
+                    if (data.username && data.text) {
+                        console.log(`Mensaje de chat recibido de ${data.username}: ${data.text}`);
+                        broadcastChatMessage(data.username, data.text);
+                    } else {
+                        console.warn("Mensaje 'chat' inválido recibido:", data);
+                    }
+                    break;    
+
                 default:
                     console.warn("Mensaje desconocido recibido:", data);
             }
