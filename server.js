@@ -136,6 +136,22 @@ wss.on('connection', (ws) => {
     });
 });
 
+function broadcastChatMessage(username, text) {
+    const message = {
+        type: 'chat',
+        username,
+        text,
+    };
+
+    wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify(message));
+        }
+    });
+}
+
+
+
 // Función para enviar el estado del juego
 function broadcastGameState() {
     gameState.players = Object.fromEntries(
